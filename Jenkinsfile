@@ -56,22 +56,25 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                script {
-                    // Run container for testing
-                    bat 'docker run -d -p 8090:80 --name test-container my-image'
-                    bat 'timeout /t 5' // wait a bit for container to start
+       stage('Run Tests') {
+    steps {
+        script {
+            // Run container for testing
+            bat 'docker run -d -p 8090:80 --name test-container my-image'
 
-                    // Run PowerShell test
-                    bat 'powershell -ExecutionPolicy Bypass -File test.ps1'
+            // Wait for container to fully start
+            bat 'ping -n 6 127.0.0.1 > nul'
 
-                    // Stop and remove container
-                    bat 'docker stop test-container'
-                    bat 'docker rm test-container'
-                }
-            }
+            // Run PowerShell test
+            bat 'powershell -ExecutionPolicy Bypass -File test.ps1'
+
+            // Stop and remove container
+            bat 'docker stop test-container'
+            bat 'docker rm test-container'
         }
+    }
+}
+
 
         stage('Run Container') {
             steps {
