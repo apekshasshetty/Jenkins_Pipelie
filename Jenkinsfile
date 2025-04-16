@@ -18,22 +18,22 @@ pipeline {
         stage('Run Container') {
             steps {
                 script {
-                    // Stop and remove existing container if any
-                    bat '''docker stop my-running-container || exit 0
-                          docker rm my-running-container || exit 0
+                    // Stop and remove existing container if any - ignore errors
+                    bat '''
+                        docker stop my-running-container || echo "Container not running"
+                        docker rm my-running-container || echo "Container not found"
                     '''
                    
-                    // Check if port 8090 is in use
-                    def portInUse = bat(script: 'netstat -an | findstr 8090', returnStdout: true).trim()
+                    // Check if port 8090 is in use - use returnStatus to get the exit code
+                    def portCheck = bat(script: 'netstat -an | findstr 8090', returnStatus: true)
                    
-                    if (portInUse) {
-                        echo 'Port 8090 is already in use, attempting to run on a different port.'
-                        // Optionally, you can dynamically change the port or set a fallback port
-                        def fallbackPort = 8091
-                        bat "docker run -d -p ${fallbackPort}:80 --name my-running-container my-image"
+                    // portCheck == 0 means port is in use (findstr found the pattern)
+                    if (portCheck == 0) {
+                        echo 'Port 8090 is already in use, using fallback port 8091'
+                        bat "docker run -d -p 8091:80 --name my-running-container my-image"
                     } else {
-                        // Run on port 8090 if available
-                        bat "docker run -d -p 8000:80 --name my-running-container my-image"
+                        echo 'Port 8090 is available'
+                        bat "docker run -d -p 8090:80 --name my-running-container my-image"
                     }
                 }
             }
