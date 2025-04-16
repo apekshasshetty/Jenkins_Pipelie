@@ -2,12 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Clone Repo') {
-            steps {
-                git 'https://github.com/apekshasshetty/Jenkins_Pipelie'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 script {
@@ -19,7 +13,9 @@ pipeline {
         stage('Run Container') {
             steps {
                 script {
-                    dockerImage.run("-p 8080:8080")
+                    // Remove existing container if already running
+                    sh "docker rm -f my-website-container || true"
+                    dockerImage.run("-p 8080:8080 --name my-website-container")
                 }
             }
         }
