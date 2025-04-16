@@ -33,7 +33,7 @@ pipeline {
                         bat "docker run -d -p ${fallbackPort}:80 --name my-running-container my-image"
                     } else {
                         // Run on port 8090 if available
-                        bat "docker run -d -p 8090:80 --name my-running-container my-image"
+                        bat "docker run -d -p 8000:80 --name my-running-container my-image"
                     }
                 }
             }
