@@ -60,7 +60,7 @@ pipeline {
     steps {
         script {
             // Run container for testing
-            bat 'docker run -d -p 8090:80 --name my-test-new my-image'
+            bat 'docker run -d -p 8090:80 --name test-container my-image'
 
             // Wait for container to fully start
             bat 'ping -n 6 127.0.0.1 > nul'

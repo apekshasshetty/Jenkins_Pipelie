@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Unit Test</title>
+    <script src="app.js"></script>
+</head>
+<body>
+    <h2>JS Unit Tests</h2>
+    <div id="test-results"></div>
+
+    <script>
+        function assertEqual(actual, expected, description) {
+            const result = document.createElement("p");
+            if (actual === expected) {
+                result.textContent = `✅ ${description}`;
+            } else {
+                result.textContent = `❌ ${description} — Expected: "${expected}", Got: "${actual}"`;
+                result.style.color = "red";
+            }
+            document.getElementById("test-results").appendChild(result);
+        }
+
+        // Run your tests
+        assertEqual(typeof getMessage, "function", "getMessage should be a function");
+        assertEqual(getMessage(), "Hey there!Thanks for clicking. This is the new web page.", "getMessage should return correct text");
+    </script>
+</body>
+</html>
